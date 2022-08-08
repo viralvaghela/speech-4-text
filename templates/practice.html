@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Practice</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://www.markuptag.com/bootstrap/5/css/bootstrap.min.css" />
+</head>
+
+<body>
+    <!-- NavigationBar-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <h2 class="text-warning">Practice </h2>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mob-navbar"
+                aria-label="Toggle">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mob-navbar">
+                <ul class="navbar-nav mb-2 mb-lg-0 mx-auto">
+                    <!-- add profile link  -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile">Profile</a>
+                    </li>
+                    <!-- add practice link  -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/practice">Practice</a>
+                    </li>
+                </ul>
+
+                <a href="/logout" class="btn btn-warning">Logout</a>
+
+            </div>
+        </div>
+    </nav>
+    <br><br>
+    <!-- Registratio Page -->
+    <div class="container-fluid">
+        <!-- display paragraph -->
+
+        <div class="col-md-4 offset-md-4">
+            <h2 id="title_of_paragraph">{{ title }}</h2>
+
+            <p id="paragraph"> {{ random_paragraph }}</p>
+            <!-- <p id="paragraph">this is a cat</p> -->
+            <h3>You Are Speaking : </h3>
+            <p id="user_words"> </p>
+
+            <h3 id="points"> </h3>
+
+        </div>
+
+     
+
+
+        <!-- create a button named start,which will start speech to text -->
+        <div class="col-md-4 offset-md-4">
+            <button id="start" class="btn btn-success">Start</button>
+            <button id="stop" class="btn btn-danger">Stop</button>
+            <button id="compare" onclick="compare()" class="btn btn-success">Compare</button>
+            <button id="reset" onclick="reset()" class="btn btn-warning">Reset</button>
+
+            <!-- javascript code to start speech to text and compare the words user has said with the paragraph words -->
+            <script>
+                document.getElementById('start').addEventListener('click', function () {
+                    var paragraph = document.getElementById('user_words');
+                    var start = document.getElementById('start');
+                    var stop = document.getElementById('stop');
+                    var recognition = new webkitSpeechRecognition();
+                    recognition.continuous = true;
+                    recognition.interimResults = true;
+                    recognition.lang = 'en-US';
+                    recognition.start();
+                    recognition.onresult = function (event) {
+                        var interim_transcript = '';
+                        for (var i = event.resultIndex; i < event.results.length; i++) {
+                            var transcript = event.results[i][0].transcript;
+                            if (event.results[i].isFinal) {
+                                paragraph.innerHTML = transcript;
+                            } else {
+                                interim_transcript += transcript;
+                            }
+                        }
+                        paragraph.innerHTML = interim_transcript;
+                    }
+                    start.disabled = true;
+                    stop.disabled = false;
+                });
+                document.getElementById('stop').addEventListener('click', function () {
+                    var paragraph = document.getElementById('paragraph');
+                    var start = document.getElementById('start');
+                    var stop = document.getElementById('stop');
+                    var recognition = new webkitSpeechRecognition();
+                    recognition.stop();
+                    start.disabled = false;
+                    stop.disabled = true;
+                });
+
+                ///javascript code to compare the words user has said with the paragraph words 
+                var words;
+                var count;
+                var user_words_array = [];
+                var user_words;
+                var correct_words_array = [];
+
+                function compare() {
+
+                    user_words = document.getElementById('user_words');
+                    var paragraph = document.getElementById('paragraph');
+                    words = paragraph.innerHTML.split(' ');
+
+                    var user_words_array = user_words.innerHTML.split(' ');
+                    count = 0;
+                    for (var i = 0; i < words.length; i++) {
+                        for (var j = 0; j < user_words_array.length; j++) {
+                            if (words[i] == user_words_array[j]) {
+                                count++;
+                                correct_words_array.push(words[i]);
+
+                            }
+                        }
+                    }
+                    // fimnd the number of unique correct words specified by the user
+                    correct_words_array.shift();
+                    let unique_correct_words_array = [...new Set(correct_words_array)]; // create a new array without duplicates
+                    var poitns = unique_correct_words_array.length * 10;
+                    console.log("Unique Words: -> ", unique_correct_words_array);
+                    console.log("Unique words length ->", unique_correct_words_array.length);
+
+
+                    //find the total length of unique words in the paragraph 
+                    var par_words = document.getElementById('paragraph').innerHTML;
+                    var par_words_array = par_words.split(' ');
+                    let unique_par_words_array = [...new Set(par_words_array)]; // create a new array without duplicates
+                    unique_par_words_array.shift();
+                    console.log("Unique Paragraph Words: -> ", unique_par_words_array);
+                    console.log("Unique Paragraph words length ->", unique_par_words_array.length);
+                    var TotalPoitns = (unique_par_words_array.length * 10);
+                    var user_scored = poitns + " / " + TotalPoitns;
+                    //calculate the percentage of correct words
+                    var percentage = (poitns / TotalPoitns) * 100;
+
+                    // generate grade from percentage. if percentage is greater than 80 then grade is A else if percentage is greater than 60 then grade is B else if percentage is greater than 40 then grade is C else if percentage is greater than 20 then grade is D else grade is F
+                    if (percentage > 80) {
+                        var grade = "A";
+                    } else if (percentage > 60) {
+                        var grade = "B";
+                    } else if (percentage > 40) {
+                        var grade = "C";
+                    } else if (percentage > 20) {
+                        var grade = "D";
+                    } else {
+                        var grade = "F";
+                    }
+                    console.log("percentage: -> ", percentage);
+                    console.log("Grade: -> ", grade);
+
+                    console.log(unique_correct_words_array);
+                    if (unique_correct_words_array.length == 1 && unique_correct_words_array[0] == "") {
+                        user_scored = "0 / " + TotalPoitns;
+                    }
+                    document.getElementById('points').innerHTML = user_scored;
+
+                    document.getElementById('points').innerHTML = "Correct words are: </h3><br> <i><code>" + unique_correct_words_array + "</code></i> <h3><br> you have Earned <b>" + user_scored + "</b> Points !!!";
+
+                    document.getElementById('p').value = user_scored;
+                    document.getElementById('c').value = unique_correct_words_array;
+                    document.getElementById('grade').value = grade;
+                    
+                }
+
+                //javascript code to reset the page
+                function reset() {
+                    words = 0;
+                    poitns = 0;
+                    count = 0;
+                    correct_words_array = [];
+                    user_words_array = [];
+
+                    document.getElementById('points').innerHTML = " ";
+
+                    //console all data
+                    console.log("Words: -> ", words);
+                    console.log("Count:->", count);
+                    console.log("correct_words_array:-> ", correct_words_array);
+                    console.log("user_words_array:-> ", user_words_array);
+
+                }
+
+            </script>
+            <br><br>
+            <form method="post" id="submitForm" action="/submitpoint">
+
+
+                {% csrf_token %}
+                <input type="hidden" name="points" id="p">
+                <input type="hidden" id="c" name="correctwords">
+                <input type="hidden" name="title" value="{{ title }}">
+                <input type="hidden" name="grade" id="grade"  >
+                <button id="submit" class="btn btn-success">Submit Data</button>
+            </form>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

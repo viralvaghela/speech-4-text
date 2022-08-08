@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Profile</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://www.markuptag.com/bootstrap/5/css/bootstrap.min.css" />
+</head>
+
+<body>
+    <!-- NavigationBar-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <h2 class="text-warning">Welcome {{ user }}! </h2>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mob-navbar"
+                aria-label="Toggle">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mob-navbar">
+                <ul class="navbar-nav mb-2 mb-lg-0 mx-auto">
+                    <!-- add profile link  -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile">Profile</a>
+                    </li>
+                    <!-- add practice link  -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/practice">Practice</a>
+                    </li>
+                </ul>
+
+                </ul>
+
+                <a href="/logout" class="btn btn-warning">Logout</a>
+
+            </div>
+        </div>
+    </nav>
+    <!-- Registratio Page -->
+    <div class="container-fluid">
+
+        <div class="col-md-12" style="margin:1px; padding: 1px ">
+
+            <!-- {{correct_words}} -->
+            {% if correct_words is not None %}
+
+            <h2>Your Score</h2>
+            {% for c in correct_words %}
+
+
+
+            <div class="row" >
+                <div class="col-sm-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{c.title}} </h5>   
+                                <p class="card-text">{{ c.words }}</p>
+                                </p>
+                                <i class="btn btn-primary"> {{c.points}} Points </i>
+                                <i class="btn btn-primary"> Grade : {{c.grade}}  </i>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                {% endif %}
+
+
+            </div>
+
+
+</body>
+
+</html>
