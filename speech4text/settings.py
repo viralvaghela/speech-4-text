@@ -25,7 +25,10 @@ SECRET_KEY = 'django-insecure-7fx_-nufb+4e_pbsv9wo9nnu6^0cv6rg-bz)rl&+n8&e=e9i2#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+
+
+#add speech4text.herokuapp.com in allowd hosts
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
